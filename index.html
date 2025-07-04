@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Chosen Palette: Calm Harmony (based on #f0f4f8 background, #0A2463 for text, #3E92CC for accents) -->
+    <!-- Application Structure Plan: The SPA is structured as a narrative dashboard. It starts with high-level KPIs (8 channels, 87 sub-channels) and key benefits to establish context. A central doughnut chart provides a visual comparison of channel diversity. The core of the app is an interactive explorer section with cards for each of the 8 main channels. This structure was chosen to transform the linear PDF into a non-linear, exploratory experience, allowing users to get a quick overview and then drill down into specifics without losing context on a single page. A simplified flowchart at the end contextualizes the classification process for practical use. -->
+    <!-- Visualization & Content Choices: 
+    - KPIs (8/87): Goal: Inform -> Method: Large text -> Justification: High impact.
+    - Benefits: Goal: Inform -> Method: Grid of cards with Unicode icons -> Justification: Scannable, visual.
+    - Sub-Channel Distribution: Goal: Compare -> Method: Chart.js Doughnut Chart (Canvas) -> Justification: Shows part-to-whole relationship of channel complexity effectively. Interaction via tooltips.
+    - Channel Hierarchy: Goal: Organize/Explore -> Method: HTML Grid of Cards. The main interaction is the scroll navigation and chart tooltips.
+    - Classification Process: Goal: Organize -> Method: HTML/CSS Flexbox Diagram -> Justification: Visually explains the practical application/logic without external libraries.
+    - All choices adhere to the NO SVG/Mermaid constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Canales de Venta AGA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .section-title {
+            color: #0A2463;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(10, 36, 99, 0.1);
+        }
+        .flowchart-step {
+            border: 2px solid #3E92CC;
+            background-color: white;
+            color: #0A2463;
+            min-height: 80px;
+        }
+        .flowchart-arrow {
+            color: #3E92CC;
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .nav-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-button:hover {
+            background-color: #3E92CC;
+            color: white;
+        }
+        .llm-button {
+            background-color: #3E92CC;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .llm-button:hover {
+            background-color: #0A2463;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3E92CC;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold section-title mb-2">Estrategia de Canales de Venta AGA</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Una visualización interactiva de la segmentación del mercado para optimizar el alcance y la efectividad de las estrategias comerciales.</p>
+        </header>
+
+        <section id="kpis" class="mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                <div class="card rounded-xl p-8 shadow-md">
+                    <h3 class="text-6xl font-extrabold section-title">8</h3>
+                    <p class="text-xl font-semibold text-gray-600 mt-2">Canales Principales</p>
+                    <p class="text-gray-500 mt-1">Son los pilares de nuestra estrategia de mercado.</p>
+                </div>
+                <div class="card rounded-xl p-8 shadow-md">
+                    <h3 class="text-6xl font-extrabold section-title">87</h3>
+                    <p class="text-xl font-semibold text-gray-600 mt-2">Sub-Canales Definidos</p>
+                    <p class="text-gray-500 mt-1">Permiten un enfoque detallado y específico por cliente.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="benefits" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 section-title">Beneficios Clave de la Segmentación</h2>
+            <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div class="card rounded-lg p-6">
+                    <div class="text-4xl mb-3">📊</div>
+                    <h3 class="font-semibold text-gray-700">Mejores Estrategias</h3>
+                </div>
+                <div class="card rounded-lg p-6">
+                    <div class="text-4xl mb-3">💰</div>
+                    <h3 class="font-semibold text-gray-700">Optimización de Presupuesto</h3>
+                </div>
+                <div class="card rounded-lg p-6">
+                    <div class="text-4xl mb-3">🎯</div>
+                    <h3 class="font-semibold text-gray-700">Mejor Posicionamiento</h3>
+                </div>
+                <div class="card rounded-lg p-6">
+                    <div class="text-4xl mb-3">📈</div>
+                    <h3 class="font-semibold text-gray-700">Desarrollo de Canales</h3>
+                </div>
+            </div>
+        </section>
+
+        <section id="distribution" class="mb-16 card rounded-xl p-6 md:p-8 shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-2 section-title">Distribución de Sub-Canales</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Esta gráfica de dona muestra cómo se distribuyen los 87 sub-canales entre los 8 canales principales. Podemos observar que los canales "Otros", "Entretenimiento" y "Tradicional" son los más diversificados, lo que indica una amplia variedad de puntos de venta y oportunidades dentro de ellos.</p>
+            <div class="chart-container">
+                <canvas id="subChannelDistributionChart"></canvas>
+            </div>
+        </section>
+        
+        <section id="llm-features" class="mb-16 card rounded-xl p-6 md:p-8 shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-2 section-title">✨ Ideas Estratégicas con Gemini ✨</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Utiliza la inteligencia artificial para generar ideas de marketing y ventajas competitivas para nuestros canales de venta.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Channel Insights -->
+                <div class="card rounded-lg p-6 flex flex-col">
+                    <h3 class="text-xl font-bold section-title mb-4">Estrategias de Marketing por Canal</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Selecciona un canal para obtener ideas de estrategias de marketing innovadoras y específicas.</p>
+                    <select id="channelSelectInsights" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecciona un Canal</option>
+                        <option value="1. Tradicional">1. Tradicional</option>
+                        <option value="2. Comer y Beber">2. Comer y Beber</option>
+                        <option value="3. Tiendas de Conveniencia">3. Tiendas de Conveniencia</option>
+                        <option value="4. Auto-Servicios">4. Auto-Servicios</option>
+                        <option value="5. Educación">5. Educación</option>
+                        <option value="6. Trabajo">6. Trabajo</option>
+                        <option value="7. Entretenimiento y Recreación">7. Entretenimiento y Recreación</option>
+                        <option value="8. Otros">8. Otros</option>
+                    </select>
+                    <button id="generateInsightsBtn" class="llm-button flex items-center justify-center">
+                        Generar Estrategias ✨
+                        <span id="insightsSpinner" class="loading-spinner hidden"></span>
+                    </button>
+                    <div id="insightsOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona un canal y haz clic para generar.</div>
+                </div>
+
+                <!-- Competitive Advantage Ideas -->
+                <div class="card rounded-lg p-6 flex flex-col">
+                    <h3 class="text-xl font-bold section-title mb-4">Ventajas Competitivas</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Obtén ideas sobre cómo diferenciarte de la competencia en un canal específico.</p>
+                    <select id="channelSelectCompetitive" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecciona un Canal</option>
+                        <option value="1. Tradicional">1. Tradicional</option>
+                        <option value="2. Comer y Beber">2. Comer y Beber</option>
+                        <option value="3. Tiendas de Conveniencia">3. Tiendas de Conveniencia</option>
+                        <option value="4. Auto-Servicios">4. Auto-Servicios</option>
+                        <option value="5. Educación">5. Educación</option>
+                        <option value="6. Trabajo">6. Trabajo</option>
+                        <option value="7. Entretenimiento y Recreación">7. Entretenimiento y Recreación</option>
+                        <option value="8. Otros">8. Otros</option>
+                    </select>
+                    <button id="generateCompetitiveBtn" class="llm-button flex items-center justify-center">
+                        Generar Ideas ✨
+                        <span id="competitiveSpinner" class="loading-spinner hidden"></span>
+                    </button>
+                    <div id="competitiveOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona un canal y haz clic para generar.</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="channels-deep-dive" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 section-title">Explorador de Canales</h2>
+            <p class="text-center text-gray-600 mb-10 max-w-3xl mx-auto">Navega a través de los 8 canales principales para ver una descripción detallada de cada uno de sus sub-canales. Utiliza los botones para saltar directamente a la sección que te interese.</p>
+            
+            <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
+                 <a href="#canal-1" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Tradicional</a>
+                 <a href="#canal-2" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Comer y Beber</a>
+                 <a href="#canal-3" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Conveniencia</a>
+                 <a href="#canal-4" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Auto-Servicios</a>
+                 <a href="#canal-5" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Educación</a>
+                 <a href="#canal-6" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Trabajo</a>
+                 <a href="#canal-7" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Entretenimiento</a>
+                 <a href="#canal-8" class="nav-button font-semibold py-2 px-4 rounded-full border border-gray-300 bg-white text-gray-700">Otros</a>
+            </nav>
+
+            <div class="space-y-10">
+                <div id="canal-1" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">1. Tradicional (13 Sub-Canales)</h3>
+                    <p class="mb-6 text-gray-600">Este canal agrupa los puntos de venta de proximidad, que son clave para el consumo diario de los clientes. Incluye desde tiendas familiares hasta comercios especializados de barrio.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Abarrotes:</strong> Tiendas familiares con perecederos refrigerados.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Misceláneas/Estanquillos:</strong> Tiendas pequeñas de botanas y dulces.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Hogar con Venta:</strong> Venta desde una ventana o cochera.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Vinos y Licores:</strong> Tiendas especializadas en bebidas alcohólicas.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Tortillería:</strong> Venta de tortillas y artículos básicos.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Panadería:</strong> Venta de pan, pasteles y complementos.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Farmacia Independiente:</strong> Farmacias de un solo dueño.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Frutas y Verduras:</strong> Venta de productos frescos.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Carnicería/Pollería/Pescadería:</strong> Venta de carnes.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Tiendas de Alimentos Especializadas:</strong> Productos gourmet o naturistas.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Tienda de Mayoreo con Venta al Detalle:</strong> Venta por volumen.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Venta de Cerveza y/o Depósito:</strong> Especializadas en cerveza.</div>
+                        <div class="bg-blue-50 p-3 rounded-md border-l-4 border-blue-300"><strong>Mini Súper Independiente:</strong> Autoservicio pequeño, no de cadena.</div>
+                    </div>
+                </div>
+
+                 <div id="canal-2" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">2. Comer y Beber (13 Sub-Canales)</h3>
+                    <p class="mb-6 text-gray-600">Incluye todos los establecimientos donde el principal motivo de visita es el consumo de alimentos y bebidas en el lugar. Abarca desde comida rápida hasta restaurantes de alta gama.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Vendedores Ambulantes:</strong> Puestos en la vía pública.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Fonda/Lonchería/Merendero:</strong> Comida casera económica.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Cafetería/Nevería/Fuente de Sodas:</strong> Especializados en café, helados y snacks.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Hamburguesas/Sandwiches/Tortas:</strong> Comida rápida especializada.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Pizzas:</strong> Pizzerías de cadena o independientes.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Pollos:</strong> Venta de pollo preparado.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Puesto de Venta de Alimentos/Snacks:</strong> Puestos semipermanentes o móviles.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Comida Mexicana/Tacos:</strong> Taquerías y restaurantes de comida mexicana.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Mariscos:</strong> Restaurantes especializados en mariscos.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Otros Alimentos:</strong> Comida no clasificada en otras categorías.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Bar/Taberna/Cantina:</strong> Venta de bebidas alcohólicas para consumo local.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Restaurantes de Servicio Completo:</strong> Con servicio a la mesa.</div>
+                        <div class="bg-green-50 p-3 rounded-md border-l-4 border-green-300"><strong>Restaurantes Premium:</strong> De precios elevados y alto nivel de servicio.</div>
+                    </div>
+                </div>
+
+                <div id="canal-3" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">3. Tiendas de Conveniencia (2 Sub-Canales)</h3>
+                    <p class="mb-6 text-gray-600">Este canal se caracteriza por su enfoque en compras de urgencia o de impulso, con horarios extendidos y ubicaciones estratégicas. Son principalmente cadenas comerciales.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-yellow-50 p-3 rounded-md border-l-4 border-yellow-300"><strong>Tienda de Conveniencia de Cadena:</strong> Cadenas como OXXO, 7-Eleven.</div>
+                        <div class="bg-yellow-50 p-3 rounded-md border-l-4 border-yellow-300"><strong>Cadena de Farmacias:</strong> Farmacias de cadena con venta de productos variados.</div>
+                    </div>
+                </div>
+
+                <div id="canal-4" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">4. Auto-Servicios (9 Sub-Canales)</h3>
+                    <p class="mb-6 text-gray-600">Grandes superficies comerciales donde el cliente se sirve a sí mismo. Incluye desde pequeños supermercados de cadena hasta hipermercados y clubes de precio.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Minisúper de Cadena</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Club de Precio</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Hipermercado</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Bodega de Autoservicio</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Supermercado de Cadena</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Bodega Mini/Express</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Tiendas de Punto de Precio</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Supermercado de Gobierno</strong></div>
+                        <div class="bg-red-50 p-3 rounded-md border-l-4 border-red-300"><strong>Supermercado Independiente</strong></div>
+                    </div>
+                </div>
+                
+                <div id="canal-5" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">5. Educación (9 Sub-Canales)</h3>
+                     <p class="mb-6 text-gray-600">Puntos de venta ubicados dentro de instituciones educativas de todos los niveles, desde preescolar hasta universidades, incluyendo máquinas expendedoras.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Preescolar/Primaria Pública</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Preescolar/Primaria Privada</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Secundaria Pública</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Secundaria Privada</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Preparatoria/Bachillerato Público</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Preparatoria/Bachillerato Privado</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Universidades/Maestrías</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Vending Escuelas</strong></div>
+                        <div class="bg-purple-50 p-3 rounded-md border-l-4 border-purple-300"><strong>Otras Escuelas y Academias</strong></div>
+                    </div>
+                </div>
+
+                <div id="canal-6" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">6. Trabajo (9 Sub-Canales)</h3>
+                    <p class="mb-6 text-gray-600">Cubre los puntos de consumo dentro de los centros laborales, como comedores industriales, oficinas, bancos, hospitales y fábricas.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Corporativos, Oficinas y Bancos</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Industria/Fábricas/Maquila</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Instalaciones de Gobierno</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Instalaciones Militares</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Instituciones de Salud Pública</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Instituciones de Salud Privada</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Agricultura/Ganadería</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Oficinas de Servicios</strong></div>
+                        <div class="bg-indigo-50 p-3 rounded-md border-l-4 border-indigo-300"><strong>Vending Trabajo</strong></div>
+                    </div>
+                </div>
+
+                <div id="canal-7" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">7. Entretenimiento y Recreación (14 Sub-Canales)</h3>
+                    <p class="mb-6 text-gray-600">Agrupa todos los lugares dedicados al ocio y la diversión, donde las personas pasan su tiempo libre. Es un canal muy diverso, con eventos tanto permanentes como temporales.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Disco/Centro Nocturno</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Cine/Teatro</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Centros de Entretenimiento Temporales</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Club Deportivo (Membresía)</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Eventos Deportivos</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Gimnasios de Cadena</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Gimnasios Independientes</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Casino y Centros de Juego</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Centros de Entretenimiento Permanentes</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Academias Deportivas</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Canchas Privadas</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Cyber/Internet</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Espacios Deportivos Públicos</strong></div>
+                        <div class="bg-pink-50 p-3 rounded-md border-l-4 border-pink-300"><strong>Vending Entretenimiento</strong></div>
+                    </div>
+                </div>
+
+                <div id="canal-8" class="card rounded-xl p-6 md:p-8 shadow-md">
+                    <h3 class="text-2xl font-bold section-title mb-4">8. Otros (18 Sub-Canales)</h3>
+                    <p class="mb-6 text-gray-600">Esta es una categoría comodín que incluye una amplia gama de puntos de venta que no encajan en las clasificaciones anteriores, como hoteles, transporte, y servicios de contrato.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Otros Comercios sin Alimentos</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Puestos de Periódicos</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Medios de Transporte</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Estaciones de Transporte</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Central de Abastos</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Bodega Embotellador</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Servicios de Vending a Terceros</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Papelería</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Vending Fuera de Locales</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Venta Vendedor</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Vending Hoteles</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Hotel de Cadena</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Hotel Independiente</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Motel, Hostal, etc.</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Experiencia en Casa</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Hogar</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Terceros No Consumidores</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Otros Todos los Demás</strong></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="flowchart" class="mb-16">
+             <h2 class="text-3xl font-bold text-center mb-2 section-title">Proceso de Clasificación de Clientes</h2>
+             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Este flujo simplificado, construido con HTML y Tailwind CSS, muestra cómo se puede determinar el canal apropiado para un cliente, pasando de lo general a lo particular para asegurar una segmentación precisa.</p>
+             <div class="flex flex-col items-center space-y-4">
+                 <div class="flowchart-step rounded-lg p-4 text-center w-full md:w-1/2">
+                     <p class="font-semibold">Identificar la actividad principal del cliente.</p>
+                 </div>
+                 <div class="flowchart-arrow">↓</div>
+                  <div class="flowchart-step rounded-lg p-4 text-center w-full md:w-1/2">
+                     <p class="font-semibold">¿Ofrece comida/bebida para consumo inmediato?</p>
+                 </div>
+                 <div class="w-full flex justify-center space-x-10 my-2">
+                     <div class="flex flex-col items-center">
+                         <span class="font-bold text-green-600">SÍ</span>
+                         <span class="flowchart-arrow text-green-500">→</span>
+                     </div>
+                     <div class="flex flex-col items-center">
+                          <span class="font-bold text-red-600">NO</span>
+                          <span class="flowchart-arrow text-red-500">↓</span>
+                     </div>
+                 </div>
+                 <div class="w-full flex flex-col md:flex-row justify-center items-start">
+                     <div class="flowchart-step rounded-lg p-4 text-center w-full md:w-1/3 mr-0 md:mr-10 mb-4 md:mb-0">
+                         <p class="font-semibold">Asignar a Canal 2: Comer y Beber y buscar el sub-canal más específico (restaurante, fonda, etc.).</p>
+                     </div>
+                     <div class="flowchart-step rounded-lg p-4 text-center w-full md:w-1/2">
+                         <p class="font-semibold">¿Es una tienda de abarrotes, autoservicio, o similar?</p>
+                         <div class="flowchart-arrow">↓</div>
+                         <p class="font-semibold text-sm">Continuar el proceso de descarte con los canales restantes...</p>
+                     </div>
+                 </div>
+             </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center p-6 bg-white border-t mt-12">
+        <p class="text-gray-600">&copy; 2025 Embotelladora AGA - Inteligencia Comercial. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const wrapLabel = (label, maxLength) => {
+                if (!label) return '';
+                if (label.length <= maxLength) {
+                    return label;
+                }
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + ' ' + word).trim().length > maxLength) {
+                        if (currentLine.length > 0) {
+                            lines.push(currentLine.trim());
+                        }
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                }
+                if (currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                }
+                return lines;
+            };
+            
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                if (!item) return '';
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+            
+            const ctx = document.getElementById('subChannelDistributionChart').getContext('2d');
+            const channelData = {
+                labels: [
+                    'Tradicional', 'Comer y Beber', 'Conveniencia', 'Auto-Servicios',
+                    'Educación', 'Trabajo', 'Entretenimiento', 'Otros'
+                ],
+                counts: [13, 13, 2, 9, 9, 9, 14, 18]
+            };
+
+            const subChannelDistributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: channelData.labels.map(label => wrapLabel(label, 16)),
+                    datasets: [{
+                        label: 'Número de Sub-Canales',
+                        data: channelData.counts,
+                        backgroundColor: [
+                            '#0A2463', '#3E92CC', '#1e5a99', '#5f99cf',
+                            '#7cb0d3', '#99c7d8', '#b5dde6', '#d2f4f4'
+                        ],
+                        borderColor: '#f0f4f8',
+                        borderWidth: 4,
+                        hoverOffset: 15,
+                        hoverBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12,
+                                    family: "'Inter', sans-serif"
+                                },
+                                color: '#0A2463',
+                                 usePointStyle: true,
+                                 pointStyle: 'rectRounded'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: tooltipTitleCallback
+                            },
+                            backgroundColor: '#0A2463',
+                            titleColor: '#FFFFFF',
+                            bodyColor: '#DDDDDD',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            padding: 12,
+                            cornerRadius: 5,
+                            displayColors: false
+                        },
+                        title: {
+                            display: false
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // LLM Integration
+            const generateInsightsBtn = document.getElementById('generateInsightsBtn');
+            const channelSelectInsights = document.getElementById('channelSelectInsights');
+            const insightsOutput = document.getElementById('insightsOutput');
+            const insightsSpinner = document.getElementById('insightsSpinner');
+
+            const generateCompetitiveBtn = document.getElementById('generateCompetitiveBtn');
+            const channelSelectCompetitive = document.getElementById('channelSelectCompetitive');
+            const competitiveOutput = document.getElementById('competitiveOutput');
+            const competitiveSpinner = document.getElementById('competitiveSpinner');
+
+            const callGeminiAPI = async (prompt, outputElement, spinnerElement) => {
+                outputElement.textContent = '';
+                spinnerElement.classList.remove('hidden');
+                outputElement.classList.remove('justify-center');
+                outputElement.classList.remove('text-center');
+
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        outputElement.textContent = text;
+                    } else {
+                        outputElement.textContent = 'Error: No se pudo obtener una respuesta del LLM.';
+                    }
+                } catch (error) {
+                    outputElement.textContent = `Error al conectar con la API de Gemini: ${error.message}`;
+                } finally {
+                    spinnerElement.classList.add('hidden');
+                    if (outputElement.textContent === 'Selecciona un canal y haz clic para generar.') {
+                        outputElement.classList.add('justify-center');
+                        outputElement.classList.add('text-center');
+                    }
+                }
+            };
+
+            generateInsightsBtn.addEventListener('click', () => {
+                const selectedChannel = channelSelectInsights.value;
+                if (selectedChannel) {
+                    const prompt = `Proporciona tres estrategias de marketing innovadoras y específicas para el canal de ventas '${selectedChannel}' de una empresa de bebidas, considerando sus características principales.`;
+                    callGeminiAPI(prompt, insightsOutput, insightsSpinner);
+                } else {
+                    insightsOutput.textContent = 'Por favor, selecciona un canal.';
+                    insightsOutput.classList.add('justify-center');
+                    insightsOutput.classList.add('text-center');
+                }
+            });
+
+            generateCompetitiveBtn.addEventListener('click', () => {
+                const selectedChannel = channelSelectCompetitive.value;
+                if (selectedChannel) {
+                    const prompt = `Genera tres ideas de ventajas competitivas para una empresa de bebidas que opera en el canal '${selectedChannel}', enfocándote en cómo diferenciarse de la competencia.`;
+                    callGeminiAPI(prompt, competitiveOutput, competitiveSpinner);
+                } else {
+                    competitiveOutput.textContent = 'Por favor, selecciona un canal.';
+                    competitiveOutput.classList.add('justify-center');
+                    competitiveOutput.classList.add('text-center');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
