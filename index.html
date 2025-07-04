@@ -2,11 +2,13 @@
 <html lang="es">
 <head>
     <!-- Chosen Palette: Calm Harmony (based on #f0f4f8 background, #0A2463 for text, #3E92CC for accents) -->
-    <!-- Application Structure Plan: The SPA is structured as a narrative dashboard. It starts with high-level KPIs (8 channels, 87 sub-channels) and key benefits to establish context. A central doughnut chart provides a visual comparison of channel diversity. The core of the app is an interactive explorer section with cards for each of the 8 main channels. This structure was chosen to transform the linear PDF into a non-linear, exploratory experience, allowing users to get a quick overview and then drill down into specifics without losing context on a single page. A simplified flowchart at the end contextualizes the classification process for practical use. -->
+    <!-- Application Structure Plan: The SPA is structured as a narrative dashboard. It starts with high-level KPIs (8 channels, 87 sub-channels) and key benefits to establish context. A central doughnut chart provides a visual comparison of channel diversity. The core of the app is an interactive explorer section with cards for each of the 8 main channels. This structure was chosen to transform the linear PDF into a non-linear, exploratory experience, allowing users to get a quick overview and then drill down into specifics without losing context on a single page. A new section for the product portfolio has been added to provide comprehensive product information, including glass presentations. -->
     <!-- Visualization & Content Choices: 
     - KPIs (8/87): Goal: Inform -> Method: Large text -> Justification: High impact.
     - Benefits: Goal: Inform -> Method: Grid of cards with Unicode icons -> Justification: Scannable, visual.
     - Sub-Channel Distribution: Goal: Compare -> Method: Chart.js Doughnut Chart (Canvas) -> Justification: Shows part-to-whole relationship of channel complexity effectively. Interaction via tooltips.
+    - Product Portfolio: Goal: Inform/Organize -> Method: HTML Tables with responsive overflow -> Justification: Presents structured product data clearly and allows easy scanning of different product lines, now including glass.
+    - LLM Features: Goal: Inform/Analyze -> Method: Dropdowns + Buttons + Text output from Gemini API -> Justification: Provides dynamic strategic insights (marketing strategies, competitive advantages, sub-channel details, market trends, promotion ideas, SWOT analysis). Prompts now include specific product context (carbonated beverages and natural water, including glass presentations).
     - Channel Hierarchy: Goal: Organize/Explore -> Method: HTML Grid of Cards. The main interaction is the scroll navigation and chart tooltips.
     - Classification Process: Goal: Organize -> Method: HTML/CSS Flexbox Diagram -> Justification: Visually explains the practical application/logic without external libraries.
     - All choices adhere to the NO SVG/Mermaid constraint. -->
@@ -25,7 +27,7 @@
             background-color: #f0f4f8;
             scroll-behavior: smooth;
         }
-        .chart-container {
+       .chart-container {
             position: relative;
             margin: auto;
             height: 300px;
@@ -34,41 +36,41 @@
             max-height: 400px;
         }
         @media (min-width: 768px) {
-            .chart-container {
+           .chart-container {
                 height: 350px;
             }
         }
-        .section-title {
+       .section-title {
             color: #0A2463;
         }
-        .card {
+       .card {
             background-color: #FFFFFF;
             border: 1px solid #e2e8f0;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .card:hover {
+       .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(10, 36, 99, 0.1);
         }
-        .flowchart-step {
+       .flowchart-step {
             border: 2px solid #3E92CC;
             background-color: white;
             color: #0A2463;
             min-height: 80px;
         }
-        .flowchart-arrow {
+       .flowchart-arrow {
             color: #3E92CC;
             font-size: 2rem;
             line-height: 1;
         }
-        .nav-button {
+       .nav-button {
             transition: all 0.2s ease-in-out;
         }
-        .nav-button:hover {
+       .nav-button:hover {
             background-color: #3E92CC;
             color: white;
         }
-        .llm-button {
+       .llm-button {
             background-color: #3E92CC;
             color: white;
             padding: 10px 20px;
@@ -76,10 +78,10 @@
             font-weight: bold;
             transition: background-color 0.3s ease;
         }
-        .llm-button:hover {
+       .llm-button:hover {
             background-color: #0A2463;
         }
-        .loading-spinner {
+       .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             border-left-color: #3E92CC;
             border-radius: 50%;
@@ -147,6 +149,205 @@
             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Esta gráfica de dona muestra cómo se distribuyen los 87 sub-canales entre los 8 canales principales. Podemos observar que los canales "Otros", "Entretenimiento" y "Tradicional" son los más diversificados, lo que indica una amplia variedad de puntos de venta y oportunidades dentro de ellos.</p>
             <div class="chart-container">
                 <canvas id="subChannelDistributionChart"></canvas>
+            </div>
+        </section>
+
+        <section id="product-portfolio" class="mb-16 card rounded-xl p-6 md:p-8 shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-2 section-title">Portafolio de Productos de Embotelladora AGA</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Descubre la amplia gama de bebidas que Embotelladora AGA ofrece, categorizadas por tipo de empaque y tamaño, todas diseñadas para satisfacer diversas preferencias de consumo.</p>
+
+            <h3 class="text-2xl font-bold section-title mb-4">Productos Latas (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Light</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Rusa</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Light</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Zubba</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Uva</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Skarch Soda</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Neutro</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Lemón</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Limón</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">8 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Light</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">8 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Rusa</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">8 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Sin Azúcar</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">8 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">8 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">8 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola Light</td><td class="py-3 px-6 text-left">Lata</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">8 oz.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-2xl font-bold section-title mb-4">Productos Pet 300 Ml. (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Sin Azúcar</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Zubba</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Uva</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Skach Soda</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Neutro</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola Light</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Caballitos</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Tradicional</td><td class="py-3 px-6 text-left">300 ml.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 class="text-2xl font-bold section-title mb-4">Productos Pet 600ml (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Light</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Rusa</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Sin Azúcar</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Light</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Zubba</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Uva</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Skarch Soda</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Neutro</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Lemon One</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Lima-Limón</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Caballitos</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Tradicional</td><td class="py-3 px-6 text-left">600 ml.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-2xl font-bold section-title mb-4">Productos Pet 1 Litro (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">1 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">1 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Zubba</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Uva</td><td class="py-3 px-6 text-left">1 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Skarch Soda</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Neutro</td><td class="py-3 px-6 text-left">1 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">1 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Caballitos</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Tradicional</td><td class="py-3 px-6 text-left">1 Lt.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-2xl font-bold section-title mb-4">Productos Pet 1.5 Litros (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">1.5 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Sin Azúcar</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">1.5 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">1.5 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">1.5 Lt.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-2xl font-bold section-title mb-4">Productos Pet 2 lts (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Light</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Rusa</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Zubba</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Uva</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Skarch Soda</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Neutro</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Lemón</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Limón</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Caballitos</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Tradicional</td><td class="py-3 px-6 text-left">2 Lt.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-2xl font-bold section-title mb-4">Agua Natural Skarch (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Agua Natural Skarch</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Natural</td><td class="py-3 px-6 text-left">330 Ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Agua Natural Skarch</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Natural</td><td class="py-3 px-6 text-left">750 Ml.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Agua Natural Skarch</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Natural</td><td class="py-3 px-6 text-left">1 Lt.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Agua Natural Skarch</td><td class="py-3 px-6 text-left">Pet</td><td class="py-3 px-6 text-left">Natural</td><td class="py-3 px-6 text-left">1.5 Lt.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-2xl font-bold section-title mb-4">Productos Vidrio (No Retornables)</h3>
+            <div class="overflow-x-auto mb-8">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Marca</th>
+                            <th class="py-3 px-6 text-left">Tipo</th>
+                            <th class="py-3 px-6 text-left">Sabor</th>
+                            <th class="py-3 px-6 text-left">Tamaño</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">7 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Skarch Soda</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Neutro</td><td class="py-3 px-6 text-left">7 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Regular</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Squirt Light</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Toronja</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Sidral Aga Regular</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Manzana</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Zubba</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Uva</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Skarch Soda</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Neutro</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50"><td class="py-3 px-6 text-left whitespace-nowrap">Red Cola</td><td class="py-3 px-6 text-left">Vidrio</td><td class="py-3 px-6 text-left">Cola</td><td class="py-3 px-6 text-left">12 oz.</td></tr>
+                    </tbody>
+                </table>
             </div>
         </section>
         
@@ -244,6 +445,52 @@
                         <span id="trendsSpinner" class="loading-spinner hidden"></span>
                     </button>
                     <div id="trendsOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona un canal y haz clic para analizar.</div>
+                </div>
+
+                <!-- New Feature: Promotion Ideas -->
+                <div class="card rounded-lg p-6 flex flex-col">
+                    <h3 class="text-xl font-bold section-title mb-4">Ideas de Promociones</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Genera ideas de promociones específicas para un sub-canal seleccionado.</p>
+                    <select id="promoMainChannelSelect" class="w-full p-2 border border-gray-300 rounded-md mb-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecciona un Canal Principal</option>
+                        <option value="1. Tradicional">1. Tradicional</option>
+                        <option value="2. Comer y Beber">2. Comer y Beber</option>
+                        <option value="3. Tiendas de Conveniencia">3. Tiendas de Conveniencia</option>
+                        <option value="4. Auto-Servicios">4. Auto-Servicios</option>
+                        <option value="5. Educación">5. Educación</option>
+                        <option value="6. Trabajo">6. Trabajo</option>
+                        <option value="7. Entretenimiento y Recreación">7. Entretenimiento y Recreación</option>
+                        <option value="8. Otros">8. Otros</option>
+                    </select>
+                    <select id="promoSubChannelSelect" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500" disabled>
+                        <option value="">Selecciona un Sub-Canal</option>
+                    </select>
+                    <button id="generatePromoIdeasBtn" class="llm-button flex items-center justify-center" disabled>
+                        Generar Promociones ✨
+                        <span id="promoIdeasSpinner" class="loading-spinner hidden"></span>
+                    </button>
+                    <div id="promoIdeasOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona canal y sub-canal.</div>
+                </div>
+
+                <div class="card rounded-lg p-6 flex flex-col">
+                    <h3 class="text-xl font-bold section-title mb-4">Análisis FODA (SWOT)</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Obtén un análisis FODA (Fortalezas, Oportunidades, Debilidades, Amenazas) para un canal de venta.</p>
+                    <select id="swotChannelSelect" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecciona un Canal</option>
+                        <option value="1. Tradicional">1. Tradicional</option>
+                        <option value="2. Comer y Beber">2. Comer y Beber</option>
+                        <option value="3. Tiendas de Conveniencia">3. Tiendas de Conveniencia</option>
+                        <option value="4. Auto-Servicios">4. Auto-Servicios</option>
+                        <option value="5. Educación">5. Educación</option>
+                        <option value="6. Trabajo">6. Trabajo</option>
+                        <option value="7. Entretenimiento y Recreación">7. Entretenimiento y Recreación</option>
+                        <option value="8. Otros">8. Otros</option>
+                    </select>
+                    <button id="generateSwotBtn" class="llm-button flex items-center justify-center">
+                        Generar FODA ✨
+                        <span id="swotSpinner" class="loading-spinner hidden"></span>
+                    </button>
+                    <div id="swotOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona un canal y haz clic para generar.</div>
                 </div>
             </div>
         </section>
@@ -389,7 +636,7 @@
                         <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Otros Comercios sin Alimentos</strong></div>
                         <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Puestos de Periódicos</strong></div>
                         <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Medios de Transporte</strong></div>
-                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Estaciones de Transporte</strong></div>
+                        <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Estaciones de Trasporte</strong></div>
                         <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Central de Abastos</strong></div>
                         <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Bodega Embotellador</strong></div>
                         <div class="bg-gray-200 p-3 rounded-md border-l-4 border-gray-400"><strong>Servicios de Vending a Terceros</strong></div>
@@ -601,6 +848,9 @@
                 ]
             };
 
+            // Product context for LLM prompts
+            const productContext = "Considerando que los productos principales son bebidas carbonatadas de sabores (Squirt Toronja, Sidral Aga Manzana, Zubba Uva, Lemón Lima-Limón/Limón, Red Cola) y agua natural sin sodio (Skarch Agua). Las presentaciones incluyen latas de 8 y 12 oz, PET de 300ml, 600ml, 1L, 1.5L, 2L, agua en PET de 330ml, 750ml, 1L, 1.5L, y vidrio de 7 oz y 12 oz.";
+
 
             // LLM Integration - Existing
             const generateInsightsBtn = document.getElementById('generateInsightsBtn');
@@ -624,6 +874,17 @@
             const generateTrendsBtn = document.getElementById('generateTrendsBtn');
             const trendsOutput = document.getElementById('trendsOutput');
             const trendsSpinner = document.getElementById('trendsSpinner');
+
+            const promoMainChannelSelect = document.getElementById('promoMainChannelSelect');
+            const promoSubChannelSelect = document.getElementById('promoSubChannelSelect');
+            const generatePromoIdeasBtn = document.getElementById('generatePromoIdeasBtn');
+            const promoIdeasOutput = document.getElementById('promoIdeasOutput');
+            const promoIdeasSpinner = document.getElementById('promoIdeasSpinner');
+
+            const swotChannelSelect = document.getElementById('swotChannelSelect');
+            const generateSwotBtn = document.getElementById('generateSwotBtn');
+            const swotOutput = document.getElementById('swotOutput');
+            const swotSpinner = document.getElementById('swotSpinner');
 
 
             const callGeminiAPI = async (prompt, outputElement, spinnerElement) => {
@@ -681,7 +942,7 @@
             generateInsightsBtn.addEventListener('click', () => {
                 const selectedChannel = channelSelectInsights.value;
                 if (selectedChannel) {
-                    const prompt = `Proporciona tres estrategias de marketing innovadoras y específicas para el canal de ventas '${selectedChannel}' de una empresa de bebidas, considerando sus características principales.`;
+                    const prompt = `Proporciona tres estrategias de marketing innovadoras y específicas para el canal de ventas '${selectedChannel}' de una empresa de bebidas. ${productContext}`;
                     callGeminiAPI(prompt, insightsOutput, insightsSpinner);
                 } else {
                     insightsOutput.textContent = 'Por favor, selecciona un canal.';
@@ -693,7 +954,7 @@
             generateCompetitiveBtn.addEventListener('click', () => {
                 const selectedChannel = channelSelectCompetitive.value;
                 if (selectedChannel) {
-                    const prompt = `Genera tres ideas de ventajas competitivas para una empresa de bebidas que opera en el canal '${selectedChannel}', enfocándote en cómo diferenciarse de la competencia.`;
+                    const prompt = `Genera tres ideas de ventajas competitivas para una empresa de bebidas que opera en el canal '${selectedChannel}', enfocándote en cómo diferenciarse de la competencia. ${productContext}`;
                     callGeminiAPI(prompt, competitiveOutput, competitiveSpinner);
                 } else {
                     competitiveOutput.textContent = 'Por favor, selecciona un canal.';
@@ -702,7 +963,7 @@
                 }
             });
 
-            // New LLM Features Logic
+            // New LLM Features Logic: Sub-Channel Details
             mainChannelSelectSub.addEventListener('change', () => {
                 const selectedMainChannel = mainChannelSelectSub.value;
                 subChannelSelectDetails.innerHTML = '<option value="">Selecciona un Sub-Canal</option>';
@@ -738,7 +999,7 @@
                 const selectedMainChannel = mainChannelSelectSub.value;
                 const selectedSubChannel = subChannelSelectDetails.value;
                 if (selectedMainChannel && selectedSubChannel) {
-                    const prompt = `Proporciona una breve descripción o información clave sobre el sub-canal de ventas '${selectedSubChannel}' dentro del canal principal '${selectedMainChannel}' para una empresa de bebidas.`;
+                    const prompt = `Proporciona una breve descripción o información clave sobre el sub-canal de ventas '${selectedSubChannel}' dentro del canal principal '${selectedMainChannel}' para una empresa de bebidas. ${productContext}`;
                     callGeminiAPI(prompt, subChannelDetailsOutput, subChannelDetailsSpinner);
                 } else {
                     subChannelDetailsOutput.textContent = 'Por favor, selecciona un canal principal y un sub-canal.';
@@ -747,15 +1008,74 @@
                 }
             });
 
+            // New LLM Features Logic: Market Trends
             generateTrendsBtn.addEventListener('click', () => {
                 const selectedChannel = channelSelectTrends.value;
                 if (selectedChannel) {
-                    const prompt = `Realiza un breve análisis de las tendencias de mercado actuales que afectan al canal de ventas '${selectedChannel}' para una empresa de bebidas.`;
+                    const prompt = `Realiza un breve análisis de las tendencias de mercado actuales que afectan al canal de ventas '${selectedChannel}' para una empresa de bebidas. ${productContext}`;
                     callGeminiAPI(prompt, trendsOutput, trendsSpinner);
                 } else {
                     trendsOutput.textContent = 'Por favor, selecciona un canal.';
                     trendsOutput.classList.add('justify-center');
                     trendsOutput.classList.add('text-center');
+                }
+            });
+
+            // New Feature: Promotion Ideas
+            promoMainChannelSelect.addEventListener('change', () => {
+                const selectedMainChannel = promoMainChannelSelect.value;
+                promoSubChannelSelect.innerHTML = '<option value="">Selecciona un Sub-Canal</option>';
+                promoSubChannelSelect.disabled = true;
+                generatePromoIdeasBtn.disabled = true;
+                promoIdeasOutput.textContent = 'Selecciona canal y sub-canal.';
+                promoIdeasOutput.classList.add('justify-center');
+                promoIdeasOutput.classList.add('text-center');
+
+                if (selectedMainChannel && subChannelData[selectedMainChannel]) {
+                    subChannelData[selectedMainChannel].forEach(sub => {
+                        const option = document.createElement('option');
+                        option.value = sub;
+                        option.textContent = sub;
+                        promoSubChannelSelect.appendChild(option);
+                    });
+                    promoSubChannelSelect.disabled = false;
+                }
+            });
+
+            promoSubChannelSelect.addEventListener('change', () => {
+                if (promoSubChannelSelect.value) {
+                    generatePromoIdeasBtn.disabled = false;
+                } else {
+                    generatePromoIdeasBtn.disabled = true;
+                    promoIdeasOutput.textContent = 'Selecciona canal y sub-canal.';
+                    promoIdeasOutput.classList.add('justify-center');
+                    promoIdeasOutput.classList.add('text-center');
+                }
+            });
+
+            generatePromoIdeasBtn.addEventListener('click', () => {
+                const selectedMainChannel = promoMainChannelSelect.value;
+                const selectedSubChannel = promoSubChannelSelect.value;
+                if (selectedMainChannel && selectedSubChannel) {
+                    const prompt = `Genera tres ideas de promociones creativas y efectivas para una empresa de bebidas, dirigidas específicamente al sub-canal de ventas PARA EL CLIENTE DETALLISTA Y EL COSNUMIDOR FINAL. '${selectedSubChannel}' dentro del canal principal '${selectedMainChannel}'. ${productContext}`;
+                    callGeminiAPI(prompt, promoIdeasOutput, promoIdeasSpinner);
+                } else {
+                    promoIdeasOutput.textContent = 'Por favor, selecciona un canal principal y un sub-canal.';
+                    promoIdeasOutput.classList.add('justify-center');
+                    promoIdeasOutput.classList.add('text-center');
+                }
+            });
+
+            // New Feature: SWOT Analysis
+            generateSwotBtn.addEventListener('click', () => {
+                const selectedChannel = swotChannelSelect.value;
+                if (selectedChannel) {
+                    const prompt = `Realiza un análisis FODA (Fortalezas, Oportunidades, Debilidades, Amenazas) para una empresa de bebidas que opera en el canal de ventas '${selectedChannel}'. ${productContext}`;
+                    callGeminiAPI(prompt, swotOutput, swotSpinner);
+                } else {
+                    swotOutput.textContent = 'Por favor, selecciona un canal.';
+                    swotOutput.classList.add('justify-center');
+                    swotOutput.classList.add('text-center');
                 }
             });
         });
