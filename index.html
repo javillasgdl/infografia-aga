@@ -198,6 +198,53 @@
                     </button>
                     <div id="competitiveOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona un canal y haz clic para generar.</div>
                 </div>
+
+                <!-- Sub-Channel Specific Insights -->
+                <div class="card rounded-lg p-6 flex flex-col">
+                    <h3 class="text-xl font-bold section-title mb-4">Información Detallada por Sub-Canal</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Selecciona un canal principal y luego un sub-canal para obtener información específica.</p>
+                    <select id="mainChannelSelectSub" class="w-full p-2 border border-gray-300 rounded-md mb-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecciona un Canal Principal</option>
+                        <option value="1. Tradicional">1. Tradicional</option>
+                        <option value="2. Comer y Beber">2. Comer y Beber</option>
+                        <option value="3. Tiendas de Conveniencia">3. Tiendas de Conveniencia</option>
+                        <option value="4. Auto-Servicios">4. Auto-Servicios</option>
+                        <option value="5. Educación">5. Educación</option>
+                        <option value="6. Trabajo">6. Trabajo</option>
+                        <option value="7. Entretenimiento y Recreación">7. Entretenimiento y Recreación</option>
+                        <option value="8. Otros">8. Otros</option>
+                    </select>
+                    <select id="subChannelSelectDetails" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500" disabled>
+                        <option value="">Selecciona un Sub-Canal</option>
+                    </select>
+                    <button id="generateSubChannelDetailsBtn" class="llm-button flex items-center justify-center" disabled>
+                        Obtener Detalles ✨
+                        <span id="subChannelDetailsSpinner" class="loading-spinner hidden"></span>
+                    </button>
+                    <div id="subChannelDetailsOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona canal y sub-canal.</div>
+                </div>
+
+                <!-- Market Trend Analysis for a Channel -->
+                <div class="card rounded-lg p-6 flex flex-col">
+                    <h3 class="text-xl font-bold section-title mb-4">Análisis de Tendencias de Mercado</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Obtén un análisis de tendencias de mercado relevantes para un canal de venta específico.</p>
+                    <select id="channelSelectTrends" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Selecciona un Canal</option>
+                        <option value="1. Tradicional">1. Tradicional</option>
+                        <option value="2. Comer y Beber">2. Comer y Beber</option>
+                        <option value="3. Tiendas de Conveniencia">3. Tiendas de Conveniencia</option>
+                        <option value="4. Auto-Servicios">4. Auto-Servicios</option>
+                        <option value="5. Educación">5. Educación</option>
+                        <option value="6. Trabajo">6. Trabajo</option>
+                        <option value="7. Entretenimiento y Recreación">7. Entretenimiento y Recreación</option>
+                        <option value="8. Otros">8. Otros</option>
+                    </select>
+                    <button id="generateTrendsBtn" class="llm-button flex items-center justify-center">
+                        Analizar Tendencias ✨
+                        <span id="trendsSpinner" class="loading-spinner hidden"></span>
+                    </button>
+                    <div id="trendsOutput" class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center text-center">Selecciona un canal y haz clic para analizar.</div>
+                </div>
             </div>
         </section>
         
@@ -502,7 +549,60 @@
                 }
             });
 
-            // LLM Integration
+            // Data for sub-channels (simplified for demonstration)
+            const subChannelData = {
+                "1. Tradicional": [
+                    "Abarrotes", "Misceláneas/Estanquillos", "Hogar con Venta", "Vinos y Licores",
+                    "Tortillería", "Panadería", "Farmacia Independiente", "Frutas y Verduras",
+                    "Carnicería/Pollería/Pescadería", "Tiendas de Alimentos Especializadas",
+                    "Tienda de Mayoreo con Venta al Detalle", "Venta de Cerveza y/o Depósito",
+                    "Mini Súper Independiente"
+                ],
+                "2. Comer y Beber": [
+                    "Vendedores Ambulantes/Dulces/Otros", "Fonda/Lonchería/Merendero",
+                    "Cafetería/Nevería/Fuente de Sodas y Otros", "Hamburguesas/Sandwiches/Tortas",
+                    "Pizzas", "Pollos", "Puesto de Venta de Alimentos/Snacks",
+                    "Comida Mexicana/Tacos", "Mariscos", "Otros Alimentos",
+                    "Bar/Taberna/Cantina", "Restaurantes de Servicio Completo", "Restaurantes Premium"
+                ],
+                "3. Tiendas de Conveniencia": [
+                    "Tienda de Conveniencia de Cadena", "Cadena de Farmacias"
+                ],
+                "4. Auto-Servicios": [
+                    "Minisúper de Cadena", "Club de Precio", "Hipermercado", "Bodega de Autoservicio",
+                    "Supermercado de Cadena", "Bodega Mini/Express de Autoservicios",
+                    "Tiendas de Punto de Precio", "Supermercado de Gobierno", "Supermercado Independiente"
+                ],
+                "5. Educación": [
+                    "Preescolar/Primaria Pública", "Preescolar/Primaria Privada", "Secundaria Pública",
+                    "Secundaria Privada", "Preparatoria/Bachillerato Público", "Preparatoria/Bachillerato Privado",
+                    "Universidades/Maestrías/Doctorados", "Vending Escuelas", "Otras Escuelas y Academias Educativas"
+                ],
+                "6. Trabajo": [
+                    "Corporativos, Oficinas y Bancos", "Industria/Fabricas / Minerías / Maquila",
+                    "Instalaciones de Gobierno", "Instalaciones Militares", "Instituciones de Salud Pública",
+                    "Instituciones de Salud Privada", "Agricultura/Ganadería", "Oficinas de Servicios",
+                    "Vending Trabajo"
+                ],
+                "7. Entretenimiento y Recreación": [
+                    "Disco/Centro Nocturno", "Cine/Teatro", "Centros de Entretenimientos Temporales",
+                    "Club Deportivo (Membresía)/Escuelas Deportivas", "Eventos Deportivos",
+                    "Gimnasios de Cadena", "Gimnasios Independientes", "Casino, Apuestas y Centros de Juego",
+                    "Centros de Entretenimiento Permanentes", "Academias Deportivas", "Canchas Privadas",
+                    "Cyber/Internet", "Espacios Deportivos Públicos", "Vending Entretenimiento"
+                ],
+                "8. Otros": [
+                    "Otros Comercios sin Alimentos", "Puestos de Periódicos y Revistas", "Medios de Transporte",
+                    "Estaciones de Trasporte", "Central de Abastos", "Bodega Embotellador con Venta al Público",
+                    "Servicios de Vending a Terceros", "Papelería", "Vending Fuera de Locales", "Venta Vendedor",
+                    "Vending Hoteles", "Hotel de Cadena Nacional/Internacional", "Hotel Independiente",
+                    "Motel, Hostal y Otros Hospedajes", "Experiencia en Casa", "Hogar",
+                    "Terceros No Consumidores", "Otros Todos los Demás"
+                ]
+            };
+
+
+            // LLM Integration - Existing
             const generateInsightsBtn = document.getElementById('generateInsightsBtn');
             const channelSelectInsights = document.getElementById('channelSelectInsights');
             const insightsOutput = document.getElementById('insightsOutput');
@@ -512,6 +612,19 @@
             const channelSelectCompetitive = document.getElementById('channelSelectCompetitive');
             const competitiveOutput = document.getElementById('competitiveOutput');
             const competitiveSpinner = document.getElementById('competitiveSpinner');
+
+            // LLM Integration - New features
+            const mainChannelSelectSub = document.getElementById('mainChannelSelectSub');
+            const subChannelSelectDetails = document.getElementById('subChannelSelectDetails');
+            const generateSubChannelDetailsBtn = document.getElementById('generateSubChannelDetailsBtn');
+            const subChannelDetailsOutput = document.getElementById('subChannelDetailsOutput');
+            const subChannelDetailsSpinner = document.getElementById('subChannelDetailsSpinner');
+
+            const channelSelectTrends = document.getElementById('channelSelectTrends');
+            const generateTrendsBtn = document.getElementById('generateTrendsBtn');
+            const trendsOutput = document.getElementById('trendsOutput');
+            const trendsSpinner = document.getElementById('trendsSpinner');
+
 
             const callGeminiAPI = async (prompt, outputElement, spinnerElement) => {
                 outputElement.textContent = '';
@@ -523,7 +636,9 @@
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                const apiKey = "AIzaSyBwOIh_VV9M9Ms-iE0EJAiF219z6dfP3yI"; 
+                // START API KEY INSERTION POINT
+                const apiKey = ""; // PEGA TU CLAVE DE API DE GEMINI AQUÍ ENTRE LAS COMILLAS
+                // END API KEY INSERTION POINT
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 try {
@@ -532,6 +647,14 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
+
+                    if (!response.ok) {
+                        const errorData = await response.json(); 
+                        console.error('API Error Response:', errorData);
+                        outputElement.textContent = `Error de la API: ${response.status} ${response.statusText}. Detalles: ${JSON.stringify(errorData)}`;
+                        return;
+                    }
+
                     const result = await response.json();
 
                     if (result.candidates && result.candidates.length > 0 &&
@@ -540,13 +663,15 @@
                         const text = result.candidates[0].content.parts[0].text;
                         outputElement.textContent = text;
                     } else {
-                        outputElement.textContent = 'Error: No se pudo obtener una respuesta del LLM.';
+                        outputElement.textContent = 'Error: Estructura de respuesta inesperada del LLM.';
+                        console.error('Unexpected LLM response structure:', result);
                     }
                 } catch (error) {
                     outputElement.textContent = `Error al conectar con la API de Gemini: ${error.message}`;
+                    console.error('Fetch error:', error);
                 } finally {
                     spinnerElement.classList.add('hidden');
-                    if (outputElement.textContent === 'Selecciona un canal y haz clic para generar.') {
+                    if (outputElement.textContent === 'Selecciona un canal y haz clic para generar.' || outputElement.textContent.startsWith('Error')) {
                         outputElement.classList.add('justify-center');
                         outputElement.classList.add('text-center');
                     }
@@ -574,6 +699,63 @@
                     competitiveOutput.textContent = 'Por favor, selecciona un canal.';
                     competitiveOutput.classList.add('justify-center');
                     competitiveOutput.classList.add('text-center');
+                }
+            });
+
+            // New LLM Features Logic
+            mainChannelSelectSub.addEventListener('change', () => {
+                const selectedMainChannel = mainChannelSelectSub.value;
+                subChannelSelectDetails.innerHTML = '<option value="">Selecciona un Sub-Canal</option>';
+                subChannelSelectDetails.disabled = true;
+                generateSubChannelDetailsBtn.disabled = true;
+                subChannelDetailsOutput.textContent = 'Selecciona canal y sub-canal.';
+                subChannelDetailsOutput.classList.add('justify-center');
+                subChannelDetailsOutput.classList.add('text-center');
+
+                if (selectedMainChannel && subChannelData[selectedMainChannel]) {
+                    subChannelData[selectedMainChannel].forEach(sub => {
+                        const option = document.createElement('option');
+                        option.value = sub;
+                        option.textContent = sub;
+                        subChannelSelectDetails.appendChild(option);
+                    });
+                    subChannelSelectDetails.disabled = false;
+                }
+            });
+
+            subChannelSelectDetails.addEventListener('change', () => {
+                if (subChannelSelectDetails.value) {
+                    generateSubChannelDetailsBtn.disabled = false;
+                } else {
+                    generateSubChannelDetailsBtn.disabled = true;
+                    subChannelDetailsOutput.textContent = 'Selecciona canal y sub-canal.';
+                    subChannelDetailsOutput.classList.add('justify-center');
+                    subChannelDetailsOutput.classList.add('text-center');
+                }
+            });
+
+            generateSubChannelDetailsBtn.addEventListener('click', () => {
+                const selectedMainChannel = mainChannelSelectSub.value;
+                const selectedSubChannel = subChannelSelectDetails.value;
+                if (selectedMainChannel && selectedSubChannel) {
+                    const prompt = `Proporciona una breve descripción o información clave sobre el sub-canal de ventas '${selectedSubChannel}' dentro del canal principal '${selectedMainChannel}' para una empresa de bebidas.`;
+                    callGeminiAPI(prompt, subChannelDetailsOutput, subChannelDetailsSpinner);
+                } else {
+                    subChannelDetailsOutput.textContent = 'Por favor, selecciona un canal principal y un sub-canal.';
+                    subChannelDetailsOutput.classList.add('justify-center');
+                    subChannelDetailsOutput.classList.add('text-center');
+                }
+            });
+
+            generateTrendsBtn.addEventListener('click', () => {
+                const selectedChannel = channelSelectTrends.value;
+                if (selectedChannel) {
+                    const prompt = `Realiza un breve análisis de las tendencias de mercado actuales que afectan al canal de ventas '${selectedChannel}' para una empresa de bebidas.`;
+                    callGeminiAPI(prompt, trendsOutput, trendsSpinner);
+                } else {
+                    trendsOutput.textContent = 'Por favor, selecciona un canal.';
+                    trendsOutput.classList.add('justify-center');
+                    trendsOutput.classList.add('text-center');
                 }
             });
         });
